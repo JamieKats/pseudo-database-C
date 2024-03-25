@@ -1,0 +1,959 @@
+URL to view log online:
+https://source.eait.uq.edu.au/viewvc/csse2310-sem1-s4674720/trunk/a4/?view=log
+
+Retrieving logs at Thu Jun 2 20:55:05 AEST 2022
+------------------------------------------------------------------------
+r1 | uqpsutto | 2022-02-22 19:42:18 +1000 (Tue, 22 Feb 2022) | 1 line
+Changed paths:
+   A /play
+   A /prac
+   A /trunk
+   A /trunk/a1
+   A /trunk/a3
+   A /trunk/a4
+
+Initial repository structure
+
+
+------------------------------------------------------------------------
+r85 | s4674720 | 2022-05-14 18:06:49 +1000 (Sat, 14 May 2022) | 1 line
+Changed paths:
+   A /trunk/a4/Makefile
+   A /trunk/a4/dbclient.c
+
+Created and set up initial Makefile and dbclient.c
+
+Index: Makefile
+ Makefile |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+Index: dbclient.c
+ dbclient.c |   23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+------------------------------------------------------------------------
+r86 | s4674720 | 2022-05-14 19:47:35 +1000 (Sat, 14 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+
+in dbclient.c Add command line argument checking. process_command_line() detects not enough arguments error and detects if key contains spaces or newlines error
+
+Index: dbclient.c
+ dbclient.c |   45 ++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 44 insertions(+), 1 deletion(-)
+
+------------------------------------------------------------------------
+r87 | s4674720 | 2022-05-14 20:42:52 +1000 (Sat, 14 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+
+in dbclient.c add create_connection() what has functionality to create a TCP connection with the specified port and return the fd for that connection.
+
+Index: dbclient.c
+ dbclient.c |   56 ++++++++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 52 insertions(+), 4 deletions(-)
+
+------------------------------------------------------------------------
+r88 | s4674720 | 2022-05-15 17:14:34 +1000 (Sun, 15 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/Makefile
+   A /trunk/a4/dbserver.c
+
+Create dbserver.c and update Makefile to build dbserver. In dbserver.c add checks for invalid command lines: no auth or connections specified, connections is not a non-negative int or the port number isnt 0 or between 1024 and 65535
+
+Index: Makefile
+ Makefile |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+Index: dbserver.c
+ dbserver.c |  103 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 103 insertions(+)
+
+------------------------------------------------------------------------
+r89 | s4674720 | 2022-05-15 19:25:33 +1000 (Sun, 15 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbserver.c
+
+dbserver.c: add initialise_server() to create TCP socket and bind for listening, add process_connections() to accept incomming connections and create thread to handle connections. add client_thread() that currently only reads a single line from a connection then exits.
+
+Index: dbclient.c
+ dbclient.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+Index: dbserver.c
+ dbserver.c |  115 ++++++++++++++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 95 insertions(+), 20 deletions(-)
+
+------------------------------------------------------------------------
+r90 | s4674720 | 2022-05-16 13:31:55 +1000 (Mon, 16 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbserver.c
+
+Add check for valid authfile. Check authfile can be opened and that the first line is not empty.
+
+Index: dbserver.c
+ dbserver.c |   22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
+
+------------------------------------------------------------------------
+r91 | s4674720 | 2022-05-16 18:30:00 +1000 (Mon, 16 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbserver.c
+
+in dbclient.c, create construct_HTTP_request that creates the appropriate GET or PUT request and prints it to the server.
+
+Index: dbclient.c
+ dbclient.c |   13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+Index: dbserver.c
+ dbserver.c |   26 +++++++++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
+
+------------------------------------------------------------------------
+r92 | s4674720 | 2022-05-16 21:35:36 +1000 (Mon, 16 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/Makefile
+   M /trunk/a4/dbserver.c
+
+dbserver.c: add get_HTTP_request() to recieve and store the HTTP request as variables. Add take_lock() and release_lock() before and after processing contents of HTTP request in client_thread()
+
+Index: Makefile
+ Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Index: dbserver.c
+ dbserver.c |   79 ++++++++++++++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 68 insertions(+), 11 deletions(-)
+
+------------------------------------------------------------------------
+r93 | s4674720 | 2022-05-17 14:45:49 +1000 (Tue, 17 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbserver.c
+
+dbserver.c: in client_thread add checks for GET, PUT, and DELETE requests and retrieve response status
+
+Index: dbclient.c
+ dbclient.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+Index: dbserver.c
+ dbserver.c |   76 ++++++++++++++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 63 insertions(+), 13 deletions(-)
+
+------------------------------------------------------------------------
+r94 | s4674720 | 2022-05-17 20:05:15 +1000 (Tue, 17 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbserver.c
+
+dbserver.c: add get_status_explanation() to return a status explanation from a status code
+
+Index: dbserver.c
+ dbserver.c |   75 ++++++++++++++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 65 insertions(+), 10 deletions(-)
+
+------------------------------------------------------------------------
+r95 | s4674720 | 2022-05-18 12:43:59 +1000 (Wed, 18 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbserver.c
+
+dbserver.c: add functionality to create HTTP response and send to client. dbclient.c: add receive_response_and_exit() to receive the http response and exit with the required exit status
+
+Index: dbclient.c
+ dbclient.c |   51 +++++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 49 insertions(+), 2 deletions(-)
+Index: dbserver.c
+ dbserver.c |   73 +++++++++++++++++++------------------------------------------
+ 1 file changed, 23 insertions(+), 50 deletions(-)
+
+------------------------------------------------------------------------
+r96 | s4674720 | 2022-05-18 13:22:29 +1000 (Wed, 18 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbserver.c
+
+dbserver.c: add HttpRequest struct
+
+Index: dbserver.c
+ dbserver.c |   45 +++++++++++++++++++++++++++++++--------------
+ 1 file changed, 31 insertions(+), 14 deletions(-)
+
+------------------------------------------------------------------------
+r97 | s4674720 | 2022-05-18 22:28:58 +1000 (Wed, 18 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbserver.c
+
+dbserver.c: add httpResponse struct, and convert all variables to use httpReponse and httpRequest struct instances
+
+Index: dbserver.c
+ dbserver.c |   66 ++++++++++++++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 57 insertions(+), 9 deletions(-)
+
+------------------------------------------------------------------------
+r98 | s4674720 | 2022-05-19 10:19:50 +1000 (Thu, 19 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/Makefile
+   M /trunk/a4/dbserver.c
+   A /trunk/a4/http.c
+   A /trunk/a4/http.h
+
+Split http response/request related code into http.h and http.c
+
+Index: Makefile
+ Makefile |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+Index: dbserver.c
+ dbserver.c |  149 +++++++++++++++++++++++++++++++------------------------------
+ 1 file changed, 77 insertions(+), 72 deletions(-)
+Index: http.c
+ http.c |   87 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 87 insertions(+)
+Index: http.h
+ http.h |   60 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 60 insertions(+)
+
+------------------------------------------------------------------------
+r99 | s4674720 | 2022-05-19 11:04:25 +1000 (Thu, 19 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/http.c
+   M /trunk/a4/http.h
+
+dbclient.c: fix bug in receive_response_and_exit() where the wrong httpResponse.status value was being used to decide on the final exit status code
+
+Index: dbclient.c
+ dbclient.c |   16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
+Index: dbserver.c
+ dbserver.c |   17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+Index: http.c
+ http.c |   17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
+Index: http.h
+ http.h |    1 +
+ 1 file changed, 1 insertion(+)
+
+------------------------------------------------------------------------
+r100 | s4674720 | 2022-05-19 13:34:13 +1000 (Thu, 19 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/http.c
+   M /trunk/a4/http.h
+
+dbclient.c: split receive_request_and_exit() up into one function that receives the request and one function that exits with the appropriate status
+
+Index: dbclient.c
+ dbclient.c |   52 ++++++++++++++++++++++++++++++++++------------------
+ 1 file changed, 34 insertions(+), 18 deletions(-)
+Index: dbserver.c
+ dbserver.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Index: http.c
+ http.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+Index: http.h
+ http.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+------------------------------------------------------------------------
+r101 | s4674720 | 2022-05-19 15:10:30 +1000 (Thu, 19 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/http.h
+
+dbclient.c: add test function send_multiple_requests() to test client sending multiple requests
+
+Index: dbclient.c
+ dbclient.c |   42 +++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 35 insertions(+), 7 deletions(-)
+Index: dbserver.c
+ dbserver.c |  127 +++++++++++++++++++++++++++----------------------------------
+ 1 file changed, 58 insertions(+), 69 deletions(-)
+Index: http.h
+ http.h |    1 +
+ 1 file changed, 1 insertion(+)
+
+------------------------------------------------------------------------
+r102 | s4674720 | 2022-05-21 16:06:40 +1000 (Sat, 21 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/http.c
+   M /trunk/a4/http.h
+
+Update HttpRequest struct to hold dbType and key fields. Add functionality to check if authorization is required and if an authorization key has been provided or not.
+
+Index: dbclient.c
+ dbclient.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+Index: dbserver.c
+ dbserver.c |   51 +++++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 37 insertions(+), 14 deletions(-)
+Index: http.c
+ http.c |   56 +++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 53 insertions(+), 3 deletions(-)
+Index: http.h
+ http.h |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+------------------------------------------------------------------------
+r103 | s4674720 | 2022-05-21 16:27:05 +1000 (Sat, 21 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbserver.c
+
+Add StringStores struct to hold both public and private stringstores
+
+Index: dbserver.c
+ dbserver.c |   15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+------------------------------------------------------------------------
+r104 | s4674720 | 2022-05-21 16:47:46 +1000 (Sat, 21 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/http.c
+   M /trunk/a4/http.h
+
+Change all occurances of stringstore instance throughout code to use new StringStores struct
+
+Index: dbclient.c
+ dbclient.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Index: dbserver.c
+ dbserver.c |   28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
+Index: http.c
+ http.c |   22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+Index: http.h
+ http.h |   17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
+
+------------------------------------------------------------------------
+r105 | s4674720 | 2022-05-21 20:27:52 +1000 (Sat, 21 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/http.c
+   M /trunk/a4/http.h
+
+dbserver.c and http.c: Add check for if http request contains correct authentication string. Add functionality to access the correct version of stringstore depending on authentication.
+
+Index: dbclient.c
+ dbclient.c |   26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
+Index: dbserver.c
+ dbserver.c |   52 ++++++++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 40 insertions(+), 12 deletions(-)
+Index: http.c
+ http.c |   42 +++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 35 insertions(+), 7 deletions(-)
+Index: http.h
+ http.h |    9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+------------------------------------------------------------------------
+r106 | s4674720 | 2022-05-22 21:18:38 +1000 (Sun, 22 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/http.h
+
+dbserver.c: add check_connection_limit() to handle checking if the number of connected clients has exceeded the limit.
+
+Index: dbclient.c
+ dbclient.c |    3 +++
+ 1 file changed, 3 insertions(+)
+Index: dbserver.c
+ dbserver.c |   65 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 58 insertions(+), 7 deletions(-)
+Index: http.h
+ http.h |   17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+------------------------------------------------------------------------
+r107 | s4674720 | 2022-05-22 21:32:22 +1000 (Sun, 22 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbserver.c
+
+dbserver.c: Fix bug causing the number of clients to not decrement when server disconnects a client
+
+Index: dbserver.c
+ dbserver.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+------------------------------------------------------------------------
+r108 | s4674720 | 2022-05-23 21:10:12 +1000 (Mon, 23 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbserver.c
+
+dbserver.c: add create_signal_thread() and sig_thread() to set up the sigmask blocking SIGHUP and handle SIGHUP in sig_thread()
+
+Index: dbserver.c
+ dbserver.c |   41 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+
+------------------------------------------------------------------------
+r109 | s4674720 | 2022-05-24 11:45:05 +1000 (Tue, 24 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/http.h
+
+dbserver.c: create SignalThreadArguments struct to hold arguments passed into sig_thread(). Fix bug where the SignalThreadArguments struct was not a malloced pointer, causing sigwait() in sig_thread() to not fire and causing the lines printing out the statistics to seg fault
+
+Index: dbclient.c
+ dbclient.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Index: dbserver.c
+ dbserver.c |  103 ++++++++++++++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 85 insertions(+), 18 deletions(-)
+Index: http.h
+ http.h |    7 +++++++
+ 1 file changed, 7 insertions(+)
+
+------------------------------------------------------------------------
+r110 | s4674720 | 2022-05-24 12:30:14 +1000 (Tue, 24 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/Makefile
+   M /trunk/a4/dbserver.c
+   A /trunk/a4/stringstore.c
+   A /trunk/a4/stringstore.h
+
+Create stringstore.c and stringstore.h and update Makefile to create shared library
+
+Index: Makefile
+ Makefile |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+Index: dbserver.c
+ dbserver.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Index: stringstore.c
+ stringstore.c |   27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+Index: stringstore.h
+ stringstore.h |   41 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+
+------------------------------------------------------------------------
+r111 | s4674720 | 2022-05-24 15:23:23 +1000 (Tue, 24 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/stringstore.c
+
+stringstore.c: add functionality to stringstore_add(), stringstore_retrieve(), stringstore_delete() to add, retrieve and delete key/value pairs from the stringstore.
+
+Index: dbserver.c
+ dbserver.c |    3 +++
+ 1 file changed, 3 insertions(+)
+Index: stringstore.c
+ stringstore.c |   90 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 90 insertions(+)
+
+------------------------------------------------------------------------
+r112 | s4674720 | 2022-05-25 13:23:17 +1000 (Wed, 25 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/Makefile
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/stringstore.c
+   M /trunk/a4/stringstore.h
+
+stringstore.c: fix bugs causing segfault whenever you add a new key value pair into string store right after deleting a key value pair
+
+Index: Makefile
+ Makefile |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+Index: dbserver.c
+ dbserver.c |   42 +++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 35 insertions(+), 7 deletions(-)
+Index: stringstore.c
+ stringstore.c |   75 ++++++++++++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 58 insertions(+), 17 deletions(-)
+Index: stringstore.h
+ stringstore.h |   15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+------------------------------------------------------------------------
+r113 | s4674720 | 2022-05-26 11:34:40 +1000 (Thu, 26 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/http.c
+   M /trunk/a4/stringstore.c
+
+stringstore.c: fix bug causing string store to segfault when trying to retrieve a value from a store position that contains null because the key has previously been deleted
+
+Index: dbclient.c
+ dbclient.c |   28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
+Index: dbserver.c
+ dbserver.c |   52 ++++++++++++++++++++++++++--------------------------
+ 1 file changed, 26 insertions(+), 26 deletions(-)
+Index: http.c
+ http.c |   22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
+Index: stringstore.c
+ stringstore.c |   65 +++++++++++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 49 insertions(+), 16 deletions(-)
+
+------------------------------------------------------------------------
+r114 | s4674720 | 2022-05-26 13:40:32 +1000 (Thu, 26 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/Makefile
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/http.c
+   M /trunk/a4/http.h
+
+Fix bug causing a new string store to be created on every client connection. Fix bug causing a GET request to result in 2 queries to the string store
+
+Index: Makefile
+ Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Index: dbclient.c
+ dbclient.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+Index: dbserver.c
+ dbserver.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+Index: http.c
+ http.c |   22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
+Index: http.h
+ http.h |    1 +
+ 1 file changed, 1 insertion(+)
+
+------------------------------------------------------------------------
+r115 | s4674720 | 2022-05-26 14:03:38 +1000 (Thu, 26 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbserver.c
+
+Fix bug causing segfault when a private stringstore was specified in the http request but no authorization header was provided
+
+Index: dbserver.c
+ dbserver.c |    3 +++
+ 1 file changed, 3 insertions(+)
+
+------------------------------------------------------------------------
+r116 | s4674720 | 2022-05-26 17:00:17 +1000 (Thu, 26 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/Makefile
+   M /trunk/a4/dbclient.c
+   A /trunk/a4/dbclient.h
+   M /trunk/a4/dbserver.c
+   A /trunk/a4/dbserver.h
+
+Add dbserver.h and dbclient.h files
+
+Index: Makefile
+ Makefile |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+Index: dbclient.c
+ dbclient.c |   71 ++++++++++++++++++++++++++++++-------------------------------
+ 1 file changed, 36 insertions(+), 35 deletions(-)
+Index: dbclient.h
+ dbclient.h |   48 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+Index: dbserver.c
+ dbserver.c |  337 ++++++++++---------------------------------------------------
+ 1 file changed, 59 insertions(+), 278 deletions(-)
+Index: dbserver.h
+ dbserver.h |   52 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
+
+------------------------------------------------------------------------
+r117 | s4674720 | 2022-05-26 18:47:40 +1000 (Thu, 26 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbclient.h
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/dbserver.h
+   M /trunk/a4/http.h
+   M /trunk/a4/stringstore.h
+
+Clean up code in dbclient.c and dbserver.c, start adding comments, removing magic numbers, including more #defines.
+
+Index: dbclient.c
+ dbclient.c |   82 ++++++++++++++++++++-----------------------------------------
+ 1 file changed, 27 insertions(+), 55 deletions(-)
+Index: dbclient.h
+ dbclient.h |  125 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 123 insertions(+), 2 deletions(-)
+Index: dbserver.c
+ dbserver.c |   45 ++++++++++++++++++++++++++++++---------------
+ 1 file changed, 30 insertions(+), 15 deletions(-)
+Index: dbserver.h
+ dbserver.h |  241 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 241 insertions(+)
+Index: http.h
+ http.h |  153 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 145 insertions(+), 8 deletions(-)
+Index: stringstore.h
+ stringstore.h |   82 +++++++++++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 70 insertions(+), 12 deletions(-)
+
+------------------------------------------------------------------------
+r118 | s4674720 | 2022-05-28 16:35:40 +1000 (Sat, 28 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/Makefile
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbclient.h
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/http.c
+
+Fix bug causing auth failures statistic to increment tiwce when an auth failure occurs
+
+Index: Makefile
+ Makefile |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+Index: dbclient.c
+ dbclient.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+Index: dbclient.h
+ dbclient.h |    3 +++
+ 1 file changed, 3 insertions(+)
+Index: dbserver.c
+ dbserver.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+Index: http.c
+ http.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+------------------------------------------------------------------------
+r119 | s4674720 | 2022-05-28 19:56:21 +1000 (Sat, 28 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/http.c
+   M /trunk/a4/http.h
+   M /trunk/a4/stringstore.c
+
+Remove magic numbers from http.c and server.c
+
+Index: dbclient.c
+ dbclient.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+Index: dbserver.c
+ dbserver.c |  127 ++++++++++++-------------------------------------------------
+ 1 file changed, 26 insertions(+), 101 deletions(-)
+Index: http.c
+ http.c |  131 ++++++++++++-----------------------------------------------------
+ 1 file changed, 26 insertions(+), 105 deletions(-)
+Index: http.h
+ http.h |   20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+Index: stringstore.c
+ stringstore.c |   81 +++++++++++++++-------------------------------------------
+ 1 file changed, 21 insertions(+), 60 deletions(-)
+
+------------------------------------------------------------------------
+r120 | s4674720 | 2022-05-29 17:53:55 +1000 (Sun, 29 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/dbserver.h
+   M /trunk/a4/http.c
+   M /trunk/a4/http.h
+
+dbserver.c: break up client_thread() into smaller modular function, process_client_request()
+
+Index: dbserver.c
+ dbserver.c |   99 +++++++++++++++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 74 insertions(+), 25 deletions(-)
+Index: dbserver.h
+ dbserver.h |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+Index: http.c
+ http.c |   32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
+Index: http.h
+ http.h |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+------------------------------------------------------------------------
+r121 | s4674720 | 2022-05-29 20:57:51 +1000 (Sun, 29 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/http.c
+   M /trunk/a4/http.h
+
+dbserver.c: Add functionality to free http request and response structs
+
+Index: dbserver.c
+ dbserver.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+Index: http.c
+ http.c |   17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+Index: http.h
+ http.h |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+------------------------------------------------------------------------
+r122 | s4674720 | 2022-05-29 23:17:05 +1000 (Sun, 29 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbserver.c
+
+dbserver.c: add more #defines in file to move string defninitions to top of file
+
+Index: dbserver.c
+ dbserver.c |  103 +++++++++++++++++++++----------------------------------------
+ 1 file changed, 36 insertions(+), 67 deletions(-)
+
+------------------------------------------------------------------------
+r123 | s4674720 | 2022-05-30 13:48:30 +1000 (Mon, 30 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/dbserver.h
+
+Add function comments to dbserver.h
+
+Index: dbserver.c
+ dbserver.c |   84 ++++++++++++++++++++++++++++++++++---------------------------
+ 1 file changed, 47 insertions(+), 37 deletions(-)
+Index: dbserver.h
+ dbserver.h |  237 ++++++++++++++++++++++++-------------------------------------
+ 1 file changed, 95 insertions(+), 142 deletions(-)
+
+------------------------------------------------------------------------
+r124 | s4674720 | 2022-05-31 15:31:52 +1000 (Tue, 31 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbclient.h
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/dbserver.h
+   M /trunk/a4/http.c
+   M /trunk/a4/http.h
+
+Add function comments to http.h
+
+Index: dbclient.c
+ dbclient.c |   21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
+Index: dbclient.h
+ dbclient.h |   93 ++++++++++++++++++++++++++++++-------------------------------
+ 1 file changed, 46 insertions(+), 47 deletions(-)
+Index: dbserver.c
+ dbserver.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+Index: dbserver.h
+ dbserver.h |   95 +++++++++++++++++++++++++++++++++----------------------------
+ 1 file changed, 52 insertions(+), 43 deletions(-)
+Index: http.c
+ http.c |   29 ++++++++---------------------
+ 1 file changed, 8 insertions(+), 21 deletions(-)
+Index: http.h
+ http.h |  167 ++++++++++++++++++++++-------------------------------------------
+ 1 file changed, 58 insertions(+), 109 deletions(-)
+
+------------------------------------------------------------------------
+r125 | s4674720 | 2022-05-31 16:03:18 +1000 (Tue, 31 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbclient.h
+   M /trunk/a4/http.c
+   M /trunk/a4/http.h
+
+dbclient.c: refactor exit_client() to shorten code and simplify the logic by removing unecessary if() checks
+
+Index: dbclient.c
+ dbclient.c |   50 +++++++++++++++++++++++---------------------------
+ 1 file changed, 23 insertions(+), 27 deletions(-)
+Index: dbclient.h
+ dbclient.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+Index: http.c
+ http.c |    3 +++
+ 1 file changed, 3 insertions(+)
+Index: http.h
+ http.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+------------------------------------------------------------------------
+r126 | s4674720 | 2022-05-31 16:51:30 +1000 (Tue, 31 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbclient.h
+   M /trunk/a4/http.c
+
+Add function comments to dbclient.h
+
+Index: dbclient.c
+ dbclient.c |   29 +++++++++++------------------
+ 1 file changed, 11 insertions(+), 18 deletions(-)
+Index: dbclient.h
+ dbclient.h |   62 ++++++++-----------------------------------------------------
+ 1 file changed, 9 insertions(+), 53 deletions(-)
+Index: http.c
+ http.c |   27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
+
+------------------------------------------------------------------------
+r127 | s4674720 | 2022-05-31 17:29:51 +1000 (Tue, 31 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbclient.h
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/http.c
+   M /trunk/a4/http.h
+   M /trunk/a4/stringstore.c
+   D /trunk/a4/stringstore.h
+
+Cleanup most style issues in all files. Leave some style issues relating to test/temporary code that will be deleted before final code is submitted
+
+Index: stringstore.h (deleted)
+Index: dbclient.c
+ dbclient.c |   42 ++++++------------------------------------
+ 1 file changed, 6 insertions(+), 36 deletions(-)
+Index: dbclient.h
+ dbclient.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+Index: dbserver.c
+ dbserver.c |   23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
+Index: http.c
+ http.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+Index: http.h
+ http.h |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+Index: stringstore.c
+ stringstore.c |   50 +++++++++++++++++++++++++-------------------------
+ 1 file changed, 25 insertions(+), 25 deletions(-)
+
+------------------------------------------------------------------------
+r128 | s4674720 | 2022-05-31 20:39:31 +1000 (Tue, 31 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/Makefile
+   M /trunk/a4/stringstore.c
+
+Edit Makefile to compile stringstore.o without stringstore.h
+
+Index: Makefile
+ Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Index: stringstore.c
+ stringstore.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+------------------------------------------------------------------------
+r129 | s4674720 | 2022-05-31 20:51:13 +1000 (Tue, 31 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/Makefile
+   M /trunk/a4/stringstore.c
+
+Link stringstore library in Makefile to so stringstore can compile using the .h file provided
+
+Index: Makefile
+ Makefile |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+Index: stringstore.c
+ stringstore.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+------------------------------------------------------------------------
+r130 | s4674720 | 2022-05-31 23:35:23 +1000 (Tue, 31 May 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbserver.c
+
+Fix memory leak in dbclient.c caused by not calling freeaddrinfo() after successfull call to connect()
+
+Index: dbclient.c
+ dbclient.c |    3 +++
+ 1 file changed, 3 insertions(+)
+Index: dbserver.c
+ dbserver.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+------------------------------------------------------------------------
+r131 | s4674720 | 2022-06-01 13:07:58 +1000 (Wed, 01 Jun 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/http.c
+   M /trunk/a4/http.h
+
+dbserver.c: remove memory leak caused by the http request address not being freed correctly
+
+Index: dbserver.c
+ dbserver.c |   70 ++++++++++++++++++++++++++-----------------------------------
+ 1 file changed, 30 insertions(+), 40 deletions(-)
+Index: http.c
+ http.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
+Index: http.h
+ http.h |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+------------------------------------------------------------------------
+r132 | s4674720 | 2022-06-01 23:30:23 +1000 (Wed, 01 Jun 2022) | 1 line
+Changed paths:
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbclient.h
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/dbserver.h
+   M /trunk/a4/http.c
+   M /trunk/a4/http.h
+   M /trunk/a4/stringstore.c
+
+Make edits to function comments in dbserver.h, dbclient.h and http.h
+
+Index: http.h
+ http.h |  104 +++++++++--------------------------------------------------------
+ 1 file changed, 15 insertions(+), 89 deletions(-)
+Index: dbclient.c
+ dbclient.c |   22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+Index: dbclient.h
+ dbclient.h |   23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
+Index: dbserver.c
+ dbserver.c |   76 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 70 insertions(+), 6 deletions(-)
+Index: dbserver.h
+ dbserver.h |  145 +++++++++++++++++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 117 insertions(+), 28 deletions(-)
+Index: http.c
+ http.c |   68 -----------------------------------------------------------------
+ 1 file changed, 68 deletions(-)
+Index: stringstore.c
+ stringstore.c |    9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+------------------------------------------------------------------------
+r133 | s4674720 | 2022-06-02 20:54:36 +1000 (Thu, 02 Jun 2022) | 1 line
+Changed paths:
+   M /trunk/a4/Makefile
+   M /trunk/a4/dbclient.c
+   M /trunk/a4/dbclient.h
+   M /trunk/a4/dbserver.c
+   M /trunk/a4/dbserver.h
+   M /trunk/a4/http.c
+   M /trunk/a4/stringstore.c
+
+Clean up temporary/test code from all files.
+
+Index: Makefile
+ Makefile |    9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
+Index: dbclient.c
+ dbclient.c |   56 +++-----------------------------------------------------
+ 1 file changed, 3 insertions(+), 53 deletions(-)
+Index: dbclient.h
+ dbclient.h |    9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
+Index: dbserver.c
+ dbserver.c |   30 ++----------------------------
+ 1 file changed, 2 insertions(+), 28 deletions(-)
+Index: dbserver.h
+ dbserver.h |    9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+Index: http.c
+ http.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Index: stringstore.c
+ stringstore.c |   28 +---------------------------
+ 1 file changed, 1 insertion(+), 27 deletions(-)
+
+------------------------------------------------------------------------
