@@ -26,6 +26,18 @@ bool valid_http_method_and_address(HttpRequest* httpRequest) {
     return true;
 }
 
+int get_http_response(FILE* from, HttpResponse* http_response) {
+    // Keep reading bytes from 'from' until double CRLF is received, inidcating end of response
+    // char buffer[1024] = {0};
+    // while(fgets(buffer, strlen(buffer)))
+
+    // TEMPORARY SOLUTION: mock up a constant 200 response to get code working
+    http_response->body = "Mock body";
+    http_response->headers = '\0';
+    http_response->status = 200;
+    http_response->statusExplanation = "Mock status";
+}
+
 char* get_status_explanation(int status) {
     if (status == STATUS_OK) {
         return strdup(STATUS_EXPLANATION_OK);

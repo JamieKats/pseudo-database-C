@@ -9,23 +9,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stringstore.h>
+#include "stringstore.h"
 
 /* Increase key value buffer size by 100 when full */
 #define KEY_VALUE_BUFFER_SIZE 100
-
-/* Storage of keys and values */
-typedef struct {
-    char* key;
-    char* value;
-} KeyValue;
-
-/* Stringstore holding list of keyvalues and the number of words */
-struct StringStore {
-    KeyValue** words;
-    int numWords;
-    int bufferSize;
-};
 
 StringStore* stringstore_init(void) {
     StringStore* stringStore = malloc(sizeof(StringStore));

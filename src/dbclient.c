@@ -42,13 +42,12 @@ int main(int argc, char** argv) {
     construct_http_request(clientArgs.key, clientArgs.value, to);
 
     bool requestIsGet = is_get_request(clientArgs.value);
-    HttpResponse httpResponse;
-    memset(&httpResponse, 0, sizeof(HttpResponse));
-    get_HTTP_response(from, 
-	    &(httpResponse.status), 
-	    &(httpResponse.statusExplanation), 
-	    &(httpResponse.headers), 
-	    &(httpResponse.body));
+    
+    // Prepare http response
+    HttpResponse httpResponse = {0};
+    // memset(&httpResponse, 0, sizeof(HttpResponse));
+
+    get_http_response(from, &httpResponse);
     
     // Free resources and exit
     fclose(to);
@@ -60,7 +59,7 @@ int main(int argc, char** argv) {
 ClientArguments process_command_line(int argc, char** argv) {
     // Check min args are provided
     if (argc < MIN_NUM_ARGS) {
-	fprintf(stderr, USAGE_ERROR_MSG);
+	    fprintf(stderr, USAGE_ERROR_MSG);
         exit(USAGE_ERROR);
     }
 
@@ -68,9 +67,9 @@ ClientArguments process_command_line(int argc, char** argv) {
     int keyLen = strlen(argv[2]);
     for (int i = 0; i < keyLen; i++) {
         if (argv[2][i] == ' ' || argv[2][i] == '\n') {
-	    fprintf(stderr, KEY_ERROR);
-	    exit(USAGE_ERROR);
-	}
+            fprintf(stderr, KEY_ERROR);
+            exit(USAGE_ERROR);
+	    }
     }
 
     // Set up ClientArguments struct used to pass around the command arguments
@@ -96,8 +95,13 @@ int create_connection(ClientArguments clientArgs) {
 
     // Connect to server
     int fdServer = socket(AF_INET, SOCK_STREAM, 0); // TCP
-    if (err || connect(fdServer, (struct sockaddr*)ai->ai_addr, 
-            sizeof(struct sockaddr))) {
+    if (
+        err || connect(
+            fdServer, 
+            (struct sockaddr*)ai->ai_addr, 
+            sizeof(struct sockaddr)
+            )
+    ) {
         freeaddrinfo(ai);
 	fprintf(stderr, PORT_CONNECT_ERROR, clientArgs.port);
 	exit(CONNECTION_ERROR);
@@ -108,8 +112,15 @@ int create_connection(ClientArguments clientArgs) {
 
 void construct_http_request(char* key, char* value, FILE* toServer) {
     if (value != NULL) { // PUT request
-        fprintf(toServer, PUT_REQUEST,
-		key, CRLF, strlen(value), CRLF, CRLF, value);
+        fprintf(
+            toServer, 
+            PUT_REQUEST,
+            key, 
+            CRLF, 
+            strlen(value), 
+            CRLF, 
+            CRLF, 
+            value);
     } else { // GET Request
         fprintf(toServer, GET_REQUEST, key, CRLF, CRLF);
     }

@@ -158,13 +158,13 @@ void process_connections(int fdServer, ServerArguments serverArgs) {
     // connection
     while(true) {
         fdClient = 
-	    accept(fdServer, (struct sockaddr*)&fromAddr, &fromAddrSize);
+	        accept(fdServer, (struct sockaddr*)&fromAddr, &fromAddrSize);
 
 	if (!check_connection_limit(fdClient, &locks, &stats, serverArgs)) {
 	    continue;
 	}
-        ThreadArguments* threadArgs = initialise_thread_arguments();
-        threadArgs->fdClient = fdClient;
+    ThreadArguments* threadArgs = initialise_thread_arguments();
+    threadArgs->fdClient = fdClient;
 	threadArgs->locks = &locks;
 	threadArgs->stats = &stats;
 	threadArgs->stringStores = stringStores;
@@ -213,8 +213,8 @@ void* client_thread(void* arg) {
     // Keep processing multiple requests from the client
     while (1) {
         if (!process_client_request(to, from, threadArgs)) {
-	    break;
-	}
+	        break;
+	    }
     }
     take_lock(&(threadArgs->locks->statisticsLock));
     threadArgs->stats->connectedClients--;
@@ -237,8 +237,14 @@ int process_client_request(FILE* to, FILE* from, ThreadArguments* threadArgs) {
 
     // If EOF or a badly formed request is received return early
     char* address;
-    if (!get_HTTP_request(from, &(httpRequest.method), &address, 
-            &(httpRequest.headers), &(httpRequest.body))) {
+    if (!get_HTTP_request(
+            from, 
+            &(httpRequest.method), 
+            &address, 
+            &(httpRequest.headers), 
+            &(httpRequest.body)
+        )
+    ) {
 	return 0;
     }
     deconstruct_address(&httpRequest, address);

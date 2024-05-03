@@ -1,8 +1,10 @@
 CC=gcc
-CFLAGS=-Wall -pedantic -std=gnu99 -I /local/courses/csse2310/include -L /local/courses/csse2310/lib -l csse2310a3 -l csse2310a4 -l stringstore
-LIBCFLAGS=-fPIC -Wall -pedantic -std=gnu99 -I /local/courses/csse2310/include
-SERVERFLAGS = -pthread
-.DEFAULT_GOAL := all
+CFLAGS=-Wall -pedantic -std=gnu99 -l stringstore
+LIBCFLAGS=-fPIC -Wall -pedantic -std=gnu99
+SERVERFLAGS=-pthread
+FILE_PATH=src/
+VPATH=src/
+.DEFAULT_GOAL:=all
 all: dbclient dbserver libstringstore.so
 
 dbclient: dbclient.o http.o

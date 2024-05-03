@@ -9,10 +9,9 @@
 #ifndef HTTP_H
 #define HTTP_H
 
-#include <csse2310a4.h>
-#include <stringstore.h>
 #include <semaphore.h>
 #include <stdbool.h>
+#include "stringstore.h"
 
 /* Explanations corresponding with different http request statuses */
 #define STATUS_EXPLANATION_OK "OK"
@@ -21,6 +20,12 @@
 #define STATUS_EXPLANATION_NOT_FOUND "Not Found"
 #define STATUS_EXPLANATION_INTERNAL_SERVER_ERROR "Internal Server Error"
 #define STATUS_EXPLANATION_SERVICE_UNAVAILABLE "Service Unavailable"
+
+typedef struct HttpHeader {
+    char* key;
+    char* value;
+} HttpHeader;
+
 
 /* Contains the information in a http request */
 typedef struct HttpRequest {
@@ -49,6 +54,17 @@ typedef enum {
     STATUS_INTERNAL_SERVER_ERROR = 500,
     STATUS_SERVICE_UNAVAILABLE = 503
 } StatusValues;
+
+/**
+ * Returns the HTTP response received on the file stream provided.
+ * 
+ * from: File stream http response is recieved on
+ * http_response: pointer to HttpResponse struct of the received response.
+ * 
+ * The values of the HTTP response are set in the response pointer provided.
+*/
+int get_http_response(FILE* from, HttpResponse* http_response);
+
 
 /* get_status_explanation()
 * −−−−−−−−−−−−−−−

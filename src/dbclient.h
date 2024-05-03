@@ -15,8 +15,6 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <netdb.h>
-#include <csse2310a3.h>
-#include <csse2310a4.h>
 #include "http.h"
 
 /* Arguments passed into dbclient */
