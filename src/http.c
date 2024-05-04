@@ -36,6 +36,7 @@ int get_http_response(FILE* from, HttpResponse* http_response) {
     http_response->headers = '\0';
     http_response->status = 200;
     http_response->statusExplanation = "Mock status";
+    return 0;
 }
 
 char* get_status_explanation(int status) {
@@ -54,8 +55,25 @@ char* get_status_explanation(int status) {
     }
 }
 
+// TEST THIS
+char** split_by_char(char* address, char* delimiter, unsigned int maxFields) {
+    char* address_copy = strdup(address);
+    char* buffer[maxFields];
+    char* token = strtok(address_copy, delimiter); // Get first token
+    
+    for (int i = 0; i < maxFields; i++) {
+        buffer[i] = strdup(token);
+        token = strtok(NULL, " "); // Successive calls with NULL process remaining tokens from original string
+    }
+    buffer[maxFields] = NULL;
+
+    free(address_copy);
+    
+    return buffer;
+}
+
 void deconstruct_address(HttpRequest* httpRequest, char* address) {
-    char delimiter = '/';
+    char delimiter[] = "/";
     unsigned int maxFields = 3; // Number of strings to split string by
     char** tokens = split_by_char(address, delimiter, maxFields);
     httpRequest->dbType = strdup(tokens[1]);
@@ -87,4 +105,14 @@ void free_http_response(HttpResponse* httpResponse) {
     free(httpResponse->statusExplanation);
     free_array_of_headers(httpResponse->headers);
     free(httpResponse->body);
+}
+
+void free_array_of_headers(HttpHeader** headers) {
+    for ( ; *headers != NULL; headers++) {
+        // Free strings stored in header
+        free((*headers)->name);
+        free((*headers)->value);
+
+        free(headers);
+    }
 }

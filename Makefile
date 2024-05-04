@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -pedantic -std=gnu99 -l stringstore
+CFLAGS=-Wall -pedantic -std=gnu99
 LIBCFLAGS=-fPIC -Wall -pedantic -std=gnu99
 SERVERFLAGS=-pthread
 FILE_PATH=src/
@@ -13,7 +13,7 @@ dbserver: dbserver.o http.o
 	$(CC) $(CFLAGS) $(SERVERFLAGS) $^ -g -o $@
 # Turn stringstore.o into shared library libstringstore.so
 libstringstore.so: stringstore.o
-	$(CC) -shared -o $@ stringstore.o
+	$(CC) $(CFLAGS) $^ -g -o $@
 
 # Compile source files to objects
 dbclient.o: dbclient.c dbclient.h

@@ -22,7 +22,7 @@
 #define STATUS_EXPLANATION_SERVICE_UNAVAILABLE "Service Unavailable"
 
 typedef struct HttpHeader {
-    char* key;
+    char* name;
     char* value;
 } HttpHeader;
 
@@ -134,5 +134,9 @@ void free_http_request(HttpRequest* httpRequest);
 */
 void free_http_response(HttpResponse* httpResponse);
 
-#endif
+/**
+ * Frees the memory used by the array of headers
+*/
+void free_array_of_headers(HttpHeader** headers);
 
+#endif
